@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:applovin_max/applovin_max.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:shopping_app/app/utills/images.dart';
 import '../../data/response_state.dart';
 import '../../routes/app_pages.dart';
+import '../../utills/AppStrings.dart';
 import '../../utills/Gems_rates.dart';
 import '../../utills/colors.dart';
 import '../../utills/size_config.dart';
@@ -151,6 +153,29 @@ class ShoppingView extends GetView<ShoppingController> {
             //         : Container();
             //   }
             // [j.]}),
+            Container(
+              height: 60,
+              color: Colors.amber,
+              child: Center(
+                child: MaxAdView(
+                    adUnitId: AppStrings.MAX_BANNER_ID,
+                    adFormat: AdFormat.banner,
+                    listener: AdViewAdListener(onAdLoadedCallback: (ad) {
+                      print('Banner widget ad loaded from ' + ad.networkName);
+                    }, onAdLoadFailedCallback: (adUnitId, error) {
+                      print('Banner widget ad failed to load with error code ' +
+                          error.code.toString() +
+                          ' and message: ' +
+                          error.message);
+                    }, onAdClickedCallback: (ad) {
+                      print('Banner widget ad clicked');
+                    }, onAdExpandedCallback: (ad) {
+                      print('Banner widget ad expanded');
+                    }, onAdCollapsedCallback: (ad) {
+                      print('Banner widget ad collapsed');
+                    })),
+              ),
+            ),
 
             Obx(() => controller.responseState.value == ResponseState.idle
                 ? _beforeResponseWidget(context)

@@ -598,8 +598,7 @@ class ShoppingController extends GetxController {
     isCheckedAli = false.obs;
     isCheckedBest = false.obs;
     isCheckedAll = false.obs;
-    selectedpriceQuality?.value;
-    priceQuality;
+    selectedpriceQuality?.value = "BEST MATCH";
     countryCodeNumber;
   }
 
