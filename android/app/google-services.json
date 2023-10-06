@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "301750432881",
+    "project_id": "ai-shopping-appginiusx",
+    "storage_bucket": "ai-shopping-appginiusx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301750432881:android:c368a84ae2f864479897d0",
+        "android_client_info": {
+          "package_name": "com.appgenius.shoppingexpert.ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5O6NInBoDDcDEo9Enb1DimnKz6Hu8ckQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
