@@ -10,8 +10,10 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 // import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:im_animations/im_animations.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shopping_app/app/modules/controllers/applovin_ads_provider.dart';
 import 'package:shopping_app/app/utills/images.dart';
 import '../../data/response_state.dart';
 import '../../routes/app_pages.dart';
@@ -24,11 +26,13 @@ import '../controllers/shopping_controller.dart';
 // import 'package:markdown/markdown.dart' as md;
 
 class ShoppingView extends GetView<ShoppingController> {
-  const ShoppingView({Key? key}) : super(key: key);
+  ShoppingView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       key: controller.scaffoldKey,
       drawer: Drawer(
         width: SizeConfig.blockSizeHorizontal * 75,
@@ -37,16 +41,16 @@ class ShoppingView extends GetView<ShoppingController> {
             Container(
               width: SizeConfig.screenWidth,
               height: SizeConfig.blockSizeVertical * 30,
-              color: AppColors.neonBorder,
+              color: AppColors.drawer,
               child: Image.asset(
-                AppImages.gems,
+                AppImages.drawer,
                 scale: 5,
               ),
             ),
             GestureDetector(
                 onTap: () {
                   LaunchReview.launch(
-                    androidAppId: "",
+                    androidAppId: "com.appgenius.shoppingexpert.ai",
                   );
                 },
                 child: drawer_widget(Icons.thumb_up, "Rate Us")),
@@ -65,6 +69,7 @@ class ShoppingView extends GetView<ShoppingController> {
         ),
       ),
       appBar: AppBar(
+        backgroundColor: Colors.grey.shade100,
         title: Text(
           'Shopping',
           style: TextStyle(
@@ -154,8 +159,8 @@ class ShoppingView extends GetView<ShoppingController> {
             //   }
             // [j.]}),
             Container(
-              height: 60,
-              color: Colors.amber,
+              // height: 60,
+              // color: Colors.amber,
               child: Center(
                 child: MaxAdView(
                     adUnitId: AppStrings.MAX_BANNER_ID,
@@ -224,68 +229,107 @@ class ShoppingView extends GetView<ShoppingController> {
         //   'ShoppingView is working',
         //   style: TextStyle(fontSize: 20),
         // ),
-        SizedBox(height: 16.0),
-        TextField(
-          controller: controller.productTextCTL,
-          cursorColor: Colors.black,
-          style: TextStyle(
-              fontSize: SizeConfig.blockSizeHorizontal * 4,
-              color: Colors.black),
-          decoration: InputDecoration(
-            // hintText: text,
-            // "Product Name",
-            labelStyle: TextStyle(color: AppColors.black_color),
-            labelText: "Product Name",
-            hintText: "Example: Nike Shoes",
-            hintStyle: TextStyle(color: Colors.grey),
-            enabledBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(SizeConfig.blockSizeHorizontal * 4),
-              borderSide: BorderSide(
-                color: Color(0xFF0095B0), // Border color
-                width: 1.0, // Border width
+        SizedBox(height: 8.0),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius:
+                BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade300, // Shadow color
+                spreadRadius: 2, // Spread radius
+                blurRadius: 10, // Blur radius
+                offset: Offset(0, 5), // Offset in x and y direction
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(SizeConfig.blockSizeHorizontal * 4),
-              borderSide: BorderSide(
-                color: Color(0xFF0095B0), // Border color when focused
-                width: 3.0, // Border width when focused
-              ),
-            ),
+            ],
           ),
-          // cursorColor: Colors.white,
-          //               style: TextStyle(
-          //                   // fontSize: SizeConfig.blockSizeHorizontal * 4,
-          //                   color: Colors.white),
-          // decoration: InputDecoration(labelText:
-          // "Product Name",
-          // // fillColor: Colors.white
-          // // colo
-          // ),
-          onChanged: (value) {
-            print(value);
-            controller.productName.value = value;
-          },
+          child: TextField(
+            controller: controller.productTextCTL,
+            cursorColor: Colors.black,
+            style: TextStyle(
+                fontSize: SizeConfig.blockSizeHorizontal * 4,
+                color: Colors.black),
+            decoration: InputDecoration(
+              // hintText: text,
+
+              // "Product Name",
+
+              prefixIcon: Icon(
+                Icons.shopping_cart,
+                color: AppColors.scaffold,
+              ),
+              labelText: "Product Name",
+              labelStyle: TextStyle(color: Colors.grey.shade500),
+
+              hintText: "Example: Nike Shoes",
+              hintStyle: TextStyle(color: Colors.grey.shade400),
+              fillColor: Colors.white,
+              filled: true,
+              enabledBorder: OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8),
+                  borderSide: BorderSide.none
+                  // borderSide: BorderSide(
+                  //   color: Color(0xFF0095B0), // Border color
+                  //   width: 1.0, // Border width
+                  // ),
+                  ),
+
+              focusedBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8),
+                borderSide: BorderSide(
+                  color: AppColors.scaffold,
+                  // Color(0xFF0095B0), // Border color when focused
+                  width: 1.0, // Border width when focused
+                ),
+              ),
+            ),
+
+            // cursorColor: Colors.white,
+            //               style: TextStyle(
+            //                   // fontSize: SizeConfig.blockSizeHorizontal * 4,
+            //                   color: Colors.white),
+            // decoration: InputDecoration(labelText:
+            // "Product Name",
+            // // fillColor: Colors.white
+            // // colo
+            // ),
+            onChanged: (value) {
+              print(value);
+              controller.productName.value = value;
+            },
+          ),
         ),
+
         SizedBox(height: 16.0),
-        SizedBox(height: 16.0),
-        SizedBox(height: 16.0),
+        // SizedBox(height: 16.0),
+        // SizedBox(height: 16.0),
         Container(
           // width: SizeConfig.screenWidth *0.5,
           // height: SizeConfig.screenWidth *0.2,
           decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColors.icon_color, // Set the border color here
-              width: 2.0, // Set the border width here
-            ),
-            borderRadius: BorderRadius.circular(40.0),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade300, // Shadow color
+                spreadRadius: 2, // Spread radius
+                blurRadius: 10, // Blur radius
+                offset: Offset(0, 5), // Offset in x and y direction
+              ),
+            ],
+            // border: Border.all(
+            //   color: AppColors.icon_color, // Set the border color here
+            //   width: 2.0, // Set the border width here
+            // ),
+            borderRadius:
+                BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8),
             // color: AppColors.Electric_Blue_color,
             // borderRadius: BorderRadius.circular(12.0), // Adjust the radius as per your preference
           ),
           padding: EdgeInsets.all(16.0),
           child: RatingBar.builder(
+            unratedColor: Colors.grey.shade300,
             initialRating: 3,
             minRating: 1,
             direction: Axis.horizontal,
@@ -304,60 +348,81 @@ class ShoppingView extends GetView<ShoppingController> {
           ),
         ),
         SizedBox(height: 16.0),
-        SizedBox(height: 16.0),
-        TextField(
-          controller: controller.reviewsLimitCTL,
-          keyboardType: TextInputType.number,
-          cursorColor: Colors.black,
-          style: TextStyle(
-              fontSize: SizeConfig.blockSizeHorizontal * 4,
-              color: Colors.black),
-          decoration: InputDecoration(
-            // hintText: text,
-            // "Product Name",
-            labelStyle: TextStyle(color: AppColors.black_color),
-            labelText: "Reviews More Then",
-            hintText: "Example: 200",
-            hintStyle: TextStyle(color: Colors.grey),
-            enabledBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(SizeConfig.blockSizeHorizontal * 4),
-              borderSide: BorderSide(
-                color: Color(0xFF0095B0), // Border color
-                width: 1.0, // Border width
+        // SizedBox(height: 16.0),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius:
+                BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade300, // Shadow color
+                spreadRadius: 2, // Spread radius
+                blurRadius: 10, // Blur radius
+                offset: Offset(0, 5), // Offset in x and y direction
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(SizeConfig.blockSizeHorizontal * 4),
-              borderSide: BorderSide(
-                color: Color(0xFF0095B0), // Border color when focused
-                width: 3.0, // Border width when focused
-              ),
-            ),
+            ],
           ),
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(
-                RegExp(r'[0-9]')), // Only allow digits
-            LengthLimitingTextInputFormatter(3), // Limit to 3 characters
-          ],
-          // cursorColor: AppColors.icon_color,
-          //               style: TextStyle(
-          //                   // fontSize: SizeConfig.blockSizeHorizontal * 4,
-          //                   color: Colors.white),
-          // decoration: InputDecoration(labelText:
-          // "Reviews Limit"
-          // ),
-          onChanged: (value) {
-            print(value);
-            // controller.reviewsLimit.value = value;
-            controller.reviewsLimit.value = double.parse(value);
-          },
+          child: TextField(
+            controller: controller.reviewsLimitCTL,
+            keyboardType: TextInputType.number,
+            cursorColor: Colors.black,
+            style: TextStyle(
+                fontSize: SizeConfig.blockSizeHorizontal * 4,
+                color: Colors.black),
+            decoration: InputDecoration(
+              // hintText: text,
+              // "Product Name",
+              prefixIcon: Icon(
+                Icons.star_rate,
+                color: AppColors.scaffold,
+              ),
+              fillColor: Colors.white,
+              filled: true,
+              labelStyle: TextStyle(color: Colors.grey.shade500),
+              labelText: "Reviews More Then",
+              hintText: "Example: 200",
+              hintStyle: TextStyle(color: Colors.grey.shade400),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8),
+                  borderSide: BorderSide.none
+                  // borderSide: BorderSide(
+                  //   color: Color(0xFF0095B0), // Border color
+                  //   width: 1.0, // Border width
+                  // ),
+                  ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8),
+                borderSide: BorderSide(
+                  color: AppColors.scaffold, // Border color when focused
+                  width: 1.0, // Border width when focused
+                ),
+              ),
+            ),
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(
+                  RegExp(r'[0-9]')), // Only allow digits
+              LengthLimitingTextInputFormatter(3), // Limit to 3 characters
+            ],
+            // cursorColor: AppColors.icon_color,
+            //               style: TextStyle(
+            //                   // fontSize: SizeConfig.blockSizeHorizontal * 4,
+            //                   color: Colors.white),
+            // decoration: InputDecoration(labelText:
+            // "Reviews Limit"
+            // ),
+            onChanged: (value) {
+              print(value);
+              // controller.reviewsLimit.value = value;
+              controller.reviewsLimit.value = double.parse(value);
+            },
+          ),
         ),
 
         SizedBox(height: 16.0),
         SizedBox(height: 16.0),
-        SizedBox(height: 16.0),
+        // SizedBox(height: 16.0),
         Obx(
           () => Container(
             // color: AppColors.Bright_Pink_color,
@@ -370,11 +435,20 @@ class ShoppingView extends GetView<ShoppingController> {
                     Container(
                       width: SizeConfig.screenWidth * 0.4,
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color:
-                              AppColors.icon_color, // Set the border color here
-                          width: 2.0, // Set the border width here
-                        ),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300, // Shadow color
+                            spreadRadius: 2, // Spread radius
+                            blurRadius: 10, // Blur radius
+                            offset: Offset(0, 5), // Offset in x and y direction
+                          ),
+                        ],
+                        // border: Border.all(
+                        //   color:
+                        //       AppColors.icon_color, // Set the border color here
+                        //   width: 2.0, // Set the border width here
+                        // ),
                         borderRadius: BorderRadius.circular(40.0),
                       ),
                       child: Padding(
@@ -383,6 +457,8 @@ class ShoppingView extends GetView<ShoppingController> {
                           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Checkbox(
+                              checkColor: Colors.white,
+                              activeColor: Color(0xFFFF9054),
                               value: controller.isCheckedAmazon.value,
                               onChanged: (bool? newValue) {
                                 // This function will be called when the check box state changes
@@ -408,11 +484,15 @@ class ShoppingView extends GetView<ShoppingController> {
                     Container(
                       width: SizeConfig.screenWidth * 0.4,
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color:
-                              AppColors.icon_color, // Set the border color here
-                          width: 2.0, // Set the border width here
-                        ),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300, // Shadow color
+                            spreadRadius: 2, // Spread radius
+                            blurRadius: 10, // Blur radius
+                            offset: Offset(0, 5), // Offset in x and y direction
+                          ),
+                        ],
                         borderRadius: BorderRadius.circular(40.0),
                       ),
                       child: Padding(
@@ -421,6 +501,8 @@ class ShoppingView extends GetView<ShoppingController> {
                           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Checkbox(
+                              checkColor: Colors.white,
+                              activeColor: Color(0xFFFF9054),
                               value: controller.isCheckedeBay.value,
                               onChanged: (bool? newValue) {
                                 // This function will be called when the check box state changes
@@ -454,11 +536,15 @@ class ShoppingView extends GetView<ShoppingController> {
                     Container(
                       width: SizeConfig.screenWidth * 0.4,
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color:
-                              AppColors.icon_color, // Set the border color here
-                          width: 2.0, // Set the border width here
-                        ),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300, // Shadow color
+                            spreadRadius: 2, // Spread radius
+                            blurRadius: 10, // Blur radius
+                            offset: Offset(0, 5), // Offset in x and y direction
+                          ),
+                        ],
                         borderRadius: BorderRadius.circular(40.0),
                       ),
                       child: Padding(
@@ -467,6 +553,8 @@ class ShoppingView extends GetView<ShoppingController> {
                           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Checkbox(
+                              checkColor: Colors.white,
+                              activeColor: Color(0xFFFF9054),
                               value: controller.isCheckedAli.value,
                               onChanged: (bool? newValue) {
                                 // This function will be called when the check box state changes
@@ -492,11 +580,15 @@ class ShoppingView extends GetView<ShoppingController> {
                     Container(
                       width: SizeConfig.screenWidth * 0.4,
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color:
-                              AppColors.icon_color, // Set the border color here
-                          width: 2.0, // Set the border width here
-                        ),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300, // Shadow color
+                            spreadRadius: 2, // Spread radius
+                            blurRadius: 10, // Blur radius
+                            offset: Offset(0, 5), // Offset in x and y direction
+                          ),
+                        ],
                         borderRadius: BorderRadius.circular(40.0),
                       ),
                       child: Padding(
@@ -505,6 +597,11 @@ class ShoppingView extends GetView<ShoppingController> {
                           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Checkbox(
+                              checkColor: Colors.white,
+
+                              activeColor: Color(0xFFFF9054),
+                              // checkColor: Color(0xFFBC4301),
+                              // fillColor: Color(0xFFFF9054),
                               value: controller.isCheckedAll.value,
                               onChanged: (bool? newValue) {
                                 // This function will be called when the check box state changes
@@ -553,23 +650,32 @@ class ShoppingView extends GetView<ShoppingController> {
           //   ),
           // )
         ),
-        SizedBox(height: 16.0),
-        SizedBox(height: 16.0),
-        SizedBox(height: 16.0),
+        SizedBox(height: 24.0),
+        // SizedBox(height: 16.0),
+        // SizedBox(height: 16.0),
         Obx(() => Container(
               width: SizeConfig.screenWidth * 0.4,
               decoration: BoxDecoration(
                 // color: AppColors.Electric_Blue_color,
-                border: Border.all(
-                  color: AppColors.icon_color, // Set the border color here
-                  width: 1.0, // Set the border width here
-                ),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade300, // Shadow color
+                    spreadRadius: 2, // Spread radius
+                    blurRadius: 10, // Blur radius
+                    offset: Offset(0, 5), // Offset in x and y direction
+                  ),
+                ],
+                // border: Border.all(
+                //   color: AppColors.icon_color, // Set the border color here
+                //   width: 1.0, // Set the border width here
+                // ),
                 borderRadius: BorderRadius.circular(
                     12.0), // Adjust the radius as per your preference
               ),
               child: Center(
                 child: DropdownButton<String>(
-                    dropdownColor: AppColors.icon_color,
+                    dropdownColor: AppColors.drawer,
                     value: controller.selectedpriceQuality?.value,
                     items: controller.priceQuality
                         .map((item) => DropdownMenuItem<String>(
@@ -577,8 +683,8 @@ class ShoppingView extends GetView<ShoppingController> {
                             child: Text(
                               item,
                               style: TextStyle(
-                                  fontSize:
-                                      SizeConfig.blockSizeHorizontal * 3.5),
+                                fontSize: SizeConfig.blockSizeHorizontal * 3.5,
+                              ),
                             )))
                         .toList(),
                     onChanged: (item) {
@@ -587,8 +693,8 @@ class ShoppingView extends GetView<ShoppingController> {
               ),
             )),
         SizedBox(height: 16.0),
-        SizedBox(height: 16.0),
-        SizedBox(height: 16.0),
+        // SizedBox(height: 16.0),
+        // SizedBox(height: 16.0),
         GestureDetector(
           onTap: () {
             showCountryPicker(
@@ -613,10 +719,19 @@ class ShoppingView extends GetView<ShoppingController> {
             height: SizeConfig.screenWidth * 0.15,
             decoration: BoxDecoration(
               // color: AppColors.Electric_Blue_color,
-              border: Border.all(
-                color: AppColors.icon_color, // Set the border color here
-                width: 1.0, // Set the border width here
-              ),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade300, // Shadow color
+                  spreadRadius: 2, // Spread radius
+                  blurRadius: 10, // Blur radius
+                  offset: Offset(0, 5), // Offset in x and y direction
+                ),
+              ],
+              // border: Border.all(
+              //   color: AppColors.icon_color, // Set the border color here
+              //   width: 1.0, // Set the border width here
+              // ),
               borderRadius: BorderRadius.circular(
                   12.0), // Adjust the radius as per your preference
             ),
@@ -634,78 +749,81 @@ class ShoppingView extends GetView<ShoppingController> {
         SizedBox(height: 16.0),
         SizedBox(height: 16.0),
         SizedBox(height: 16.0),
+
         GestureDetector(
           onTap: () {
-            // Perform form submission or data processing here
-            // You can access the entered values using the respective variables
-            // purposeAndTheme, moodAndEmotion, genreAndStyle, etc.
-            // print("${controller.suggestionText[index]}");
-            //         Get.toNamed(Routes.ChatScreen, arguments: [
-            //           controller.suggestionText[index],
-            //           controller.title
-            //         ]);
-            // controller.makeThePrompt(context);
-            // controller.valid(context);
             controller.callBardOrGPT(context);
-            // controller.fetchReponce().then((value) {
-            //   controller.validator(context);
-            // });
           },
-          child:
-              // Text('Get Result'),
-              Container(
-            margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 1),
-            height: SizeConfig.blockSizeVertical * 7,
-            width: SizeConfig.blockSizeHorizontal * 70,
-            decoration: BoxDecoration(
-                color: AppColors.neonBorder,
-                // Color(0xFF05284B),
-                borderRadius:
-                    BorderRadius.circular(SizeConfig.blockSizeHorizontal * 4)),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Image.asset(AppImagesPack2.video,color: AppColors.white_color,),
-                  // SizedBox(width: SizeConfig.screenWidth*0.02,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Get Result ",
-                        style: TextStyle(
-                            fontSize: 15,
-                            // fontFamily: 'Inter',
-                            color: Colors.white),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "(Uses  ",
-                            style: TextStyle(fontSize: 10, color: Colors.white),
-                          ),
-                          Row(
-                            children: [
-                              Image.asset(
-                                AppImages.gems,
-                                scale: 30,
-                              ),
-                              Text(
-                                " ${GEMS_RATE.Shopping_GEMS_RATE}",
-                                style: StyleSheet.Intro_Sub_heading2,
-                              ),
-                              // SizedBox(width: SizeConfig.screenWidth *0.03,)
-                            ],
-                          ),
-                          Text(
-                            " )",
-                            style: TextStyle(fontSize: 10, color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ],
+          child: HeartBeat(
+            child: Container(
+              margin: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 1),
+              height: SizeConfig.blockSizeVertical * 7,
+              width: SizeConfig.blockSizeHorizontal * 65,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade400,
+                    spreadRadius: 2,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
                   ),
                 ],
+                gradient: LinearGradient(
+                  colors: [Color(0xFFFF9054), Color(0xFFBC4301)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius:
+                    BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8),
+              ),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Obx(
+                          () => Text(
+                            controller.isFirstTime!.value
+                                ? 'Get Result'
+                                : 'Try It',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "(Uses  ",
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.white),
+                            ),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  AppImages.gems,
+                                  scale: 30,
+                                ),
+                                Text(
+                                  " ${GEMS_RATE.Shopping_GEMS_RATE}",
+                                  style: StyleSheet.Intro_Sub_heading2,
+                                ),
+                              ],
+                            ),
+                            Text(
+                              " )",
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -733,7 +851,7 @@ class ShoppingView extends GetView<ShoppingController> {
               //highlight
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.icon_color),
+                border: Border.all(color: AppColors.scaffold),
               ),
               child: Column(children: [
                 Row(
@@ -956,13 +1074,51 @@ class ShoppingView extends GetView<ShoppingController> {
             ),
           ),
         ),
-        ElevatedButton(
-          onPressed: () {
-            // Add your regenerate logic here
+        GestureDetector(
+          onTap: () {
             controller.responseState.value = ResponseState.idle;
+            controller.productTextCTL.clear();
+            controller.reviewsLimitCTL.clear();
+            controller.isCheckedAll.value = false;
+            controller.country.value = "Select Country";
           },
-          child: Text('Regenerate'),
+          child: Container(
+            height: SizeConfig.blockSizeVertical * 6,
+            width: SizeConfig.blockSizeHorizontal * 60,
+            decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade400, // Shadow color
+                    spreadRadius: 2, // Spread radius
+                    blurRadius: 10, // Blur radius
+                    offset: Offset(0, 5), // Offset in x and y direction
+                  ),
+                ],
+                // color: AppColors.neonBorder,
+                gradient: LinearGradient(
+                    colors: [Color(0xFFFF9054), Color(0xFFBC4301)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter),
+                // Color(0xFF05284B),
+
+                borderRadius:
+                    BorderRadius.circular(SizeConfig.blockSizeHorizontal * 8)),
+            child: Center(
+                child: Text(
+              "Regenerate",
+              style: TextStyle(
+                  fontSize: SizeConfig.blockSizeHorizontal * 4,
+                  color: Colors.white),
+            )),
+          ),
         )
+        // ElevatedButton(
+        //   onPressed: () {
+        //     // Add your regenerate logic here
+        //     controller.responseState.value = ResponseState.idle;
+        //   },
+        //   child: Text('Regenerate'),
+        // )
       ],
     );
   }
@@ -978,7 +1134,7 @@ class ShoppingView extends GetView<ShoppingController> {
           Icon(
             icon,
             size: SizeConfig.blockSizeHorizontal * 7,
-            color: AppColors.neonBorder,
+            color: AppColors.drawer,
           ),
           horizontalSpace(SizeConfig.blockSizeHorizontal * 12),
           Text(

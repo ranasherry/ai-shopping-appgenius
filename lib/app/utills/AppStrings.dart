@@ -17,17 +17,18 @@ class AppStrings {
   static var PALM_APIKEY = "AIzaSyCfvKnZMOs0TKjNp8I4yjaFJ3Kw8MNIPN4";
 
   //original Andriod
-  static const MAX_BANNER_ID = "823aeufhia";
+  static const MAX_BANNER_ID = "d615c6114633e220";
 
-  static const MAX_INTER_ID = "8h3wh8dhuah";
+  static const MAX_INTER_ID = "6bfa8281bf3b8fd8";
 
-  static const MAX_MREC_ID = "ajoiifahuauadhiah";
+  static const MAX_MREC_ID = "53d4ef81ea7bfef7";
 
-  static const MAX_APPOPEN_ID = "328yu3rff";
+  static const MAX_APPOPEN_ID = "7cee494bfe351e4c";
 
-  static const MAX_Reward_ID = "f9329fuihf";
+  static const MAX_Reward_ID = "0dd07fe8f0576d54";
 
-  static const MAX_SDK = "o23fhhah83f9shs8wbwyd8qqb8eebe";
+  static const MAX_SDK =
+      "eCVIa8prwGmBAEXgBN70zL66PSODmw1GcCGut4bzm5eU7ANKptVSTaGrduCvfRTGOIQWEpHoI2UwQ1corcGexv";
 
   // //dummy
   // static const MAX_BANNER_ID = "0e743aaec21dsf5bf86";
@@ -41,15 +42,16 @@ class AppStrings {
   // static const MAX_Reward_ID = "45e1716388bsdf893e0";
 
   //original IOS
-  static const IOS_MAX_BANNER_ID = "";
+  static const IOS_MAX_BANNER_ID = "d615c6114633e220";
 
-  static const IOS_MAX_INTER_ID = "";
+  static const IOS_MAX_INTER_ID = "6bfa8281bf3b8fd8";
 
-  static const IOS_MAX_MREC_ID = "";
+  static const IOS_MAX_MREC_ID = "53d4ef81ea7bfef7";
 
-  static const IOS_MAX_APPOPEN_ID = "";
+  static const IOS_MAX_APPOPEN_ID = "7cee494bfe351e4c";
 
-  static const IOS_MAX_Reward_ID = "";
+  static const IOS_MAX_Reward_ID = "0dd07fe8f0576d54";
 
-  static const IOS_MAX_SDK = "";
+  static const IOS_MAX_SDK =
+      "eCVIa8prwGmBAEXgBN70zL66PSODmw1GcCGut4bzm5eU7ANKptVSTaGrduCvfRTGOIQWEpHoI2UwQ1corcGexv";
 }

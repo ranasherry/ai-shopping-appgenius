@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:applovin_max/applovin_max.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:flutter/foundation.dart';
@@ -19,8 +20,9 @@ import '../../utills/AppStrings.dart';
 import '../../utills/colors.dart';
 import '../../utills/size_config.dart';
 import '../../utills/style.dart';
+import 'applovin_ads_provider.dart';
 
-class ShoppingController extends GetxController {
+class ShoppingController extends GetxController with WidgetsBindingObserver {
   //TODO: Implement ShoppingController
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -42,7 +44,7 @@ class ShoppingController extends GetxController {
   RxDouble reviewsLimit = 0.0.obs;
   RxString selectStore = "".obs;
   // RxString priceQuality= "".obs;
-  RxString country = "Select Country".obs;
+  RxString country = "United States".obs;
   RxDouble userRating = 3.0.obs;
   IconData? selectedIcon;
   bool isVertical = false;
@@ -59,9 +61,9 @@ class ShoppingController extends GetxController {
   RxBool isCheckedeBay = false.obs;
   RxBool isCheckedAli = false.obs;
   RxBool isCheckedBest = false.obs;
-  RxBool isCheckedAll = false.obs;
-  TextEditingController productTextCTL = TextEditingController();
-  TextEditingController reviewsLimitCTL = TextEditingController();
+  RxBool isCheckedAll = true.obs;
+  TextEditingController productTextCTL = TextEditingController(text: "AirPods");
+  TextEditingController reviewsLimitCTL = TextEditingController(text: "200");
   //  List<bool> checkedList = [];
   // RxList<bool> isChecked = [false, false, false, false, false].obs;
   RxString? selectedStore = 'Amazon'.obs;
@@ -92,6 +94,9 @@ class ShoppingController extends GetxController {
   late OpenAI openAi;
 
   final APIKEY = AppStrings.GOOGLE_SHOPPING_APIKEY;
+  RxBool? isFirstTime = true.obs;
+  final prefs = SharedPreferences.getInstance();
+
   // ""
 
   // String requestTemplate =
@@ -111,14 +116,78 @@ class ShoppingController extends GetxController {
     } else {
       initialGems = GEMS_RATE.FREE_GEMS;
     }
-    // AppLovinProvider.instance.init();
+
+    AppLovinProvider.instance.init();
 
     CheckUser().then((value) {
       getGems();
     });
+
+///// AppOpen Implementation
+    if (AppLovinProvider.instance.isInitialized.value) {
+      AppLovinMAX.setAppOpenAdListener(AppOpenAdListener(
+        onAdLoadedCallback: (ad) {},
+        onAdLoadFailedCallback: (adUnitId, error) {},
+        onAdDisplayedCallback: (ad) {},
+        onAdDisplayFailedCallback: (ad, error) {
+          AppLovinMAX.loadAppOpenAd(AppStrings.MAX_APPOPEN_ID);
+        },
+        onAdClickedCallback: (ad) {},
+        onAdHiddenCallback: (ad) {
+          AppLovinMAX.loadAppOpenAd(AppStrings.MAX_APPOPEN_ID);
+        },
+        onAdRevenuePaidCallback: (ad) {},
+      ));
+
+      AppLovinMAX.loadAppOpenAd(AppStrings.MAX_APPOPEN_ID);
+    }
+
+    WidgetsBinding.instance.addObserver(this);
+
     super.onInit();
+    prefs.then((SharedPreferences pref) {
+      isFirstTime?.value = pref.getBool('first_time') ?? true;
+
+      print("Is First Time from Init: $isFirstTime");
+    });
     // checkedList = List.generate(store.length, (index) => false);
     // getlimit();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    print("AppState  : ${state}");
+    switch (state) {
+      case AppLifecycleState.resumed:
+        await showAdIfReady();
+        print("App Resume :");
+        break;
+
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.detached:
+        break;
+    }
+  }
+
+  Future<void> showAdIfReady() async {
+    if (!AppLovinProvider.instance.isInitialized.value) {
+      return;
+    }
+
+    bool isReady =
+        (await AppLovinMAX.isAppOpenAdReady(AppStrings.MAX_APPOPEN_ID))!;
+    if (isReady) {
+      AppLovinMAX.showAppOpenAd(AppStrings.MAX_APPOPEN_ID);
+    } else {
+      AppLovinMAX.loadAppOpenAd(AppStrings.MAX_APPOPEN_ID);
+    }
   }
 
   // Future getlimit() async {
@@ -158,7 +227,7 @@ class ShoppingController extends GetxController {
 
   ShareApp() {
     Share.share(
-        "Consider downloading this exceptional app, available on the Google Play Store at the following link: https://play.google.com/store/apps/details?id=");
+        "Consider downloading this exceptional app, available on the Google Play Store at the following link: https://play.google.com/store/apps/details?id=com.appgenius.shoppingexpert.ai");
   }
 
   // Toster(msg,color){
@@ -501,6 +570,7 @@ class ShoppingController extends GetxController {
       // // savelimit();
       // navCTL.saveGems(navCTL.gems.value);
       decreaseGEMS(GEMS_RATE.Shopping_GEMS_RATE);
+      setFirstTime(true);
       EasyLoading.dismiss();
     } catch (err) {
       EasyLoading.dismiss();
@@ -599,12 +669,22 @@ class ShoppingController extends GetxController {
     isCheckedBest = false.obs;
     isCheckedAll = false.obs;
     selectedpriceQuality?.value = "BEST MATCH";
+    country.value = "Select Country";
     countryCodeNumber;
   }
 
   @override
   void onClose() {
     super.onClose();
+  }
+
+  void setFirstTime(bool bool) {
+    print("setFirstTime");
+    prefs.then((SharedPreferences pref) {
+      pref.setBool('first_time', bool);
+
+      print("Is First Time: $isFirstTime");
+    });
   }
 
   void increment() => count.value++;

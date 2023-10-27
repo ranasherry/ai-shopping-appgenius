@@ -7,8 +7,8 @@ import '../../routes/app_pages.dart';
 
 class SplashController extends GetxController {
   //TODO: Implement HomeControlle
-  bool? isFirstTime = true;
-  final prefs = SharedPreferences.getInstance();
+  // bool? isFirstTime = true;
+  // final prefs = SharedPreferences.getInstance();
   // AppLovin_CTL appLovin_CTL = Get.find();
   // GoogleAdsCTL googleAdsCT=Get.find();
 
@@ -26,6 +26,7 @@ class SplashController extends GetxController {
       if (percent.value >= 100) {
         percent.value = 100;
         Get.offNamed(Routes.ShoppingView);
+
         // isLoaded.value = true;
 
         timer!.cancel();

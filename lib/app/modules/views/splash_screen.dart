@@ -30,7 +30,7 @@ class SplashScreen extends GetView<SplashController> {
                     top: SizeConfig.blockSizeVertical * 20,
                     left: SizeConfig.blockSizeHorizontal * 19),
                 child: Image.asset(
-                  AppImages.gems,
+                  AppImages.splash,
                   width: SizeConfig.blockSizeHorizontal * 60,
                   height: SizeConfig.blockSizeVertical * 30,
                   // fit: BoxFit.cover,
@@ -54,7 +54,7 @@ class SplashScreen extends GetView<SplashController> {
                     Padding(
                       padding: EdgeInsets.only(
                           top: SizeConfig.blockSizeVertical * 15),
-                      child: Text("AI Shopping",
+                      child: Text("Shopping AI",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: SizeConfig.blockSizeHorizontal * 6,
@@ -94,7 +94,7 @@ class SplashScreen extends GetView<SplashController> {
                               child: LinearProgressIndicator(
                                   minHeight: 6,
                                   backgroundColor: Colors.grey.shade100,
-                                  color: Color(0xFF007C8C)),
+                                  color: Color(0xFFFF4A00)),
                             ),
                           ))
                       // Container(

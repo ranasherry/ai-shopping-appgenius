@@ -1,11 +1,14 @@
 import 'dart:io';
+import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/app/utills/images.dart';
 import '../../data/Gems_rates.dart';
+import '../../utills/AppStrings.dart';
 import '../../utills/colors.dart';
 import '../../utills/size_config.dart';
 import '../../utills/style.dart';
+import '../controllers/applovin_ads_provider.dart';
 import '../controllers/gems_view_controller.dart';
 
 class GemsView extends GetView<GemsViewController> {
@@ -18,6 +21,7 @@ class GemsView extends GetView<GemsViewController> {
         title: Text('Get GEMS'),
         leading: GestureDetector(
             onTap: () {
+              AppLovinProvider.instance.showInterstitial(() {});
               Get.back();
             },
             child: Icon(Icons.arrow_back_ios_new)),
@@ -101,14 +105,15 @@ class GemsView extends GetView<GemsViewController> {
         // ElevatedButton(onPressed: (){}, child: Text("Watch Interstitial AD (${GEMS_RATE.INTER_INCREAES_GEMS_RATE} GEMS)")),
         GestureDetector(
           onTap: () {
-            //[j.] AppLovinProvider.instance.showInterstitial(controller.increase_inter_gems);
+            AppLovinProvider.instance
+                .showInterstitial(controller.increase_inter_gems);
           },
           child: Container(
             width: SizeConfig.screenWidth * 0.8,
             height: SizeConfig.screenHeight * 0.06,
             decoration: BoxDecoration(
               border: Border.all(
-                color: AppColors.icon_color, // Set the border color here
+                color: AppColors.scaffold, // Set the border color here
                 width: 2.0, // Set the border width here
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -125,14 +130,15 @@ class GemsView extends GetView<GemsViewController> {
         ),
         GestureDetector(
           onTap: () {
-            //[j.] AppLovinProvider.instance.showRewardedAd(controller.increase_reward_gems);
+            AppLovinProvider.instance
+                .showRewardedAd(controller.increase_reward_gems);
           },
           child: Container(
             width: SizeConfig.screenWidth * 0.8,
             height: SizeConfig.screenHeight * 0.06,
             decoration: BoxDecoration(
               border: Border.all(
-                color: AppColors.icon_color, // Set the border color here
+                color: AppColors.scaffold, // Set the border color here
                 width: 2.0, // Set the border width here
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -147,6 +153,29 @@ class GemsView extends GetView<GemsViewController> {
         // ElevatedButton(onPressed: (){}, child: Text("Watch Video AD (${GEMS_RATE.REWARD_INCREAES_GEMS_RATE} GEMS)")),
         SizedBox(
           height: SizeConfig.screenHeight * 0.03,
+        ),
+        Container(
+          // height: 60,
+          // color: Colors.amber,
+          child: Center(
+            child: MaxAdView(
+                adUnitId: AppStrings.MAX_MREC_ID,
+                adFormat: AdFormat.mrec,
+                listener: AdViewAdListener(onAdLoadedCallback: (ad) {
+                  print('Banner widget ad loaded from ' + ad.networkName);
+                }, onAdLoadFailedCallback: (adUnitId, error) {
+                  print('Banner widget ad failed to load with error code ' +
+                      error.code.toString() +
+                      ' and message: ' +
+                      error.message);
+                }, onAdClickedCallback: (ad) {
+                  print('Banner widget ad clicked');
+                }, onAdExpandedCallback: (ad) {
+                  print('Banner widget ad expanded');
+                }, onAdCollapsedCallback: (ad) {
+                  print('Banner widget ad collapsed');
+                })),
+          ),
         ),
         // Padding(
         //   padding:  EdgeInsets.all(10),
