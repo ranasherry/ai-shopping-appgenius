@@ -1,27 +1,58 @@
-import 'dart:io';
-import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shopping_app/app/provider/admob_ads_provider.dart';
 import 'package:shopping_app/app/utills/images.dart';
 import '../../data/Gems_rates.dart';
 import '../../utills/AppStrings.dart';
+import '../../utills/CM.dart';
 import '../../utills/colors.dart';
 import '../../utills/size_config.dart';
 import '../../utills/style.dart';
-import '../controllers/applovin_ads_provider.dart';
 import '../controllers/gems_view_controller.dart';
 
 class GemsView extends GetView<GemsViewController> {
-  const GemsView({Key? key}) : super(key: key);
+  GemsView({Key? key}) : super(key: key);
+
+  // // // Native Ad Implementation start // // //
+  NativeAd? nativeAd;
+  RxBool nativeAdIsLoaded = false.obs;
+
+  initNative() {
+    nativeAd = NativeAd(
+      adUnitId: AppStrings.ADMOB_NATIVE,
+      request: AdRequest(),
+      // factoryId: ,
+      nativeTemplateStyle:
+          NativeTemplateStyle(templateType: TemplateType.medium),
+      listener: NativeAdListener(
+        onAdLoaded: (Ad ad) {
+          print('$NativeAd loaded.');
+
+          nativeAdIsLoaded.value = true;
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          print('$NativeAd failedToLoad: $error');
+          ad.dispose();
+        },
+        onAdOpened: (Ad ad) => print('$NativeAd onAdOpened.'),
+        onAdClosed: (Ad ad) => print('$NativeAd onAdClosed.'),
+      ),
+    )..load();
+  }
+
+  /// Native Ad Implemntation End ///
+
   @override
   Widget build(BuildContext context) {
+    initNative();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('Get GEMS'),
         leading: GestureDetector(
             onTap: () {
-              AppLovinProvider.instance.showInterstitial(() {});
+              AdMobAdsProvider.instance.showInterstitialAd(() {});
               Get.back();
             },
             child: Icon(Icons.arrow_back_ios_new)),
@@ -87,6 +118,16 @@ class GemsView extends GetView<GemsViewController> {
                   //   ],):Container(),
                   //   SizedBox(height: SizeConfig.screenHeight *0.01,),
                   //  Platform.isAndroid? BUY_GEM_widget(context):Container()
+                  AdMobAdsProvider.instance.isAdEnable.value
+                      ? Center(
+                          child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal:
+                                      SizeConfig.blockSizeHorizontal * 5),
+                              child:
+                                  NativeAdMethed(nativeAd, nativeAdIsLoaded)),
+                        )
+                      : Container()
                 ],
               ),
             )
@@ -105,8 +146,8 @@ class GemsView extends GetView<GemsViewController> {
         // ElevatedButton(onPressed: (){}, child: Text("Watch Interstitial AD (${GEMS_RATE.INTER_INCREAES_GEMS_RATE} GEMS)")),
         GestureDetector(
           onTap: () {
-            AppLovinProvider.instance
-                .showInterstitial(controller.increase_inter_gems);
+            AdMobAdsProvider.instance
+                .showInterstitialAd(controller.increase_inter_gems);
           },
           child: Container(
             width: SizeConfig.screenWidth * 0.8,
@@ -130,8 +171,8 @@ class GemsView extends GetView<GemsViewController> {
         ),
         GestureDetector(
           onTap: () {
-            AppLovinProvider.instance
-                .showRewardedAd(controller.increase_reward_gems);
+            AdMobAdsProvider.instance
+                .ShowRewardedAd(controller.increase_reward_gems);
           },
           child: Container(
             width: SizeConfig.screenWidth * 0.8,
@@ -154,29 +195,7 @@ class GemsView extends GetView<GemsViewController> {
         SizedBox(
           height: SizeConfig.screenHeight * 0.03,
         ),
-        Container(
-          // height: 60,
-          // color: Colors.amber,
-          child: Center(
-            child: MaxAdView(
-                adUnitId: AppStrings.MAX_MREC_ID,
-                adFormat: AdFormat.mrec,
-                listener: AdViewAdListener(onAdLoadedCallback: (ad) {
-                  print('Banner widget ad loaded from ' + ad.networkName);
-                }, onAdLoadFailedCallback: (adUnitId, error) {
-                  print('Banner widget ad failed to load with error code ' +
-                      error.code.toString() +
-                      ' and message: ' +
-                      error.message);
-                }, onAdClickedCallback: (ad) {
-                  print('Banner widget ad clicked');
-                }, onAdExpandedCallback: (ad) {
-                  print('Banner widget ad expanded');
-                }, onAdCollapsedCallback: (ad) {
-                  print('Banner widget ad collapsed');
-                })),
-          ),
-        ),
+
         // Padding(
         //   padding:  EdgeInsets.all(10),
         //   child: Row(

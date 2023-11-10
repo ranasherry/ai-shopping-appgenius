@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'app/routes/app_pages.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     // DeviceOrientation.landscapeRight,
@@ -30,8 +33,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // analytics.setAnalyticsCollectionEnabled(kReleaseMode);
-    analytics.setAnalyticsCollectionEnabled(true);
+    analytics.setAnalyticsCollectionEnabled(kReleaseMode);
+    // analytics.setAnalyticsCollectionEnabled(true);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {

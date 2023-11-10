@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../provider/admob_ads_provider.dart';
 import '../../routes/app_pages.dart';
 
 class SplashController extends GetxController {
@@ -18,6 +19,7 @@ class SplashController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+
     // AppLovinProvider.instance.init();
     Timer? timer;
     timer = Timer.periodic(Duration(milliseconds: 500), (_) {

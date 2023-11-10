@@ -16,42 +16,27 @@ class AppStrings {
   static var SHOPPING_CX = "b31a97674300f4d65";
   static var PALM_APIKEY = "AIzaSyCfvKnZMOs0TKjNp8I4yjaFJ3Kw8MNIPN4";
 
-  //original Andriod
-  static const MAX_BANNER_ID = "d615c6114633e220";
+  //Real IDS! Andriod
 
-  static const MAX_INTER_ID = "6bfa8281bf3b8fd8";
+  static String ADMOB_BANNER = "ca-app-pub-6047136030887290/3191481021";
+  static String ADMOB_INTERSTITIAL = "ca-app-pub-6047136030887290/2999909330";
+  static String ADMOB_APP_OPEN = "ca-app-pub-6047136030887290/9293854947";
+  static String ADMOB_NATIVE = "ca-app-pub-6047136030887290/5051357607";
+  static String ADMOB_REWARDED = "ca-app-pub-6047136030887290/5712884345";
 
-  static const MAX_MREC_ID = "53d4ef81ea7bfef7";
+  // Test IDS!
 
-  static const MAX_APPOPEN_ID = "7cee494bfe351e4c";
-
-  static const MAX_Reward_ID = "0dd07fe8f0576d54";
-
-  static const MAX_SDK =
-      "eCVIa8prwGmBAEXgBN70zL66PSODmw1GcCGut4bzm5eU7ANKptVSTaGrduCvfRTGOIQWEpHoI2UwQ1corcGexv";
-
-  // //dummy
-  // static const MAX_BANNER_ID = "0e743aaec21dsf5bf86";
-
-  // static const MAX_INTER_ID = "93a27328d6dfs60cb3c";
-
-  // static const MAX_MREC_ID = "b33ca2ae060fsdf13e1";
-
-  // static const MAX_APPOPEN_ID = "f1c6011070sdf2c2293";
-
-  // static const MAX_Reward_ID = "45e1716388bsdf893e0";
-
-  //original IOS
-  static const IOS_MAX_BANNER_ID = "d615c6114633e220";
-
-  static const IOS_MAX_INTER_ID = "6bfa8281bf3b8fd8";
-
-  static const IOS_MAX_MREC_ID = "53d4ef81ea7bfef7";
-
-  static const IOS_MAX_APPOPEN_ID = "7cee494bfe351e4c";
-
-  static const IOS_MAX_Reward_ID = "0dd07fe8f0576d54";
-
-  static const IOS_MAX_SDK =
-      "eCVIa8prwGmBAEXgBN70zL66PSODmw1GcCGut4bzm5eU7ANKptVSTaGrduCvfRTGOIQWEpHoI2UwQ1corcGexv";
+  // static String ADMOB_BANNER = "ca-app-pub-3940256099942544/6300978111";
+  // static String ADMOB_INTERSTITIAL = "ca-app-pub-3940256099942544/1033173712";
+  // static String ADMOB_APP_OPEN = "ca-app-pub-3940256099942544/3419835294";
+  // static String ADMOB_NATIVE = "ca-app-pub-3940256099942544/2247696110";
+  // static String ADMOB_REWARDED = "ca-app-pub-3940256099942544/5224354917";
 }
+
+
+// ca-app-pub-6047136030887290/9293854947 app open
+// ca-app-pub-6047136030887290/3191481021banner
+// ca-app-pub-6047136030887290/2999909330 inter
+// ca-app-pub-6047136030887290/5051357607 native
+// ca-app-pub-6047136030887290/5712884345 reward
+// ca-app-pub-6047136030887290~4850340766 app id

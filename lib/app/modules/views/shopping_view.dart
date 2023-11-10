@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:applovin_max/applovin_max.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +8,14 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 // import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:im_animations/im_animations.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shopping_app/app/modules/controllers/applovin_ads_provider.dart';
+
 import 'package:shopping_app/app/utills/images.dart';
 import '../../data/response_state.dart';
+import '../../provider/admob_ads_provider.dart';
 import '../../routes/app_pages.dart';
 import '../../utills/AppStrings.dart';
 import '../../utills/Gems_rates.dart';
@@ -28,164 +28,155 @@ import '../controllers/shopping_controller.dart';
 class ShoppingView extends GetView<ShoppingController> {
   ShoppingView({Key? key}) : super(key: key);
 
+  // // // Banner Ad Implementation start // // //
+// ? Commented by jamal start
+  // late BannerAd myBanner;
+  // RxBool isBannerLoaded = false.obs;
+
+  // initBanner() {
+  //   BannerAdListener listener = BannerAdListener(
+  //     // Called when an ad is successfully received.
+  //     onAdLoaded: (Ad ad) {
+  //       print('Ad loaded.');
+  //       isBannerLoaded.value = true;
+  //     },
+  //     // Called when an ad request failed.
+  //     onAdFailedToLoad: (Ad ad, LoadAdError error) {
+  //       // Dispose the ad here to free resources.
+  //       ad.dispose();
+  //       print('Ad failed to load: $error');
+  //     },
+  //     // Called when an ad opens an overlay that covers the screen.
+  //     onAdOpened: (Ad ad) {
+  //       print('Ad opened.');
+  //     },
+  //     // Called when an ad removes an overlay that covers the screen.
+  //     onAdClosed: (Ad ad) {
+  //       print('Ad closed.');
+  //     },
+  //     // Called when an impression occurs on the ad.
+  //     onAdImpression: (Ad ad) {
+  //       print('Ad impression.');
+  //     },
+  //   );
+
+  //   myBanner = BannerAd(
+  //     adUnitId: AppStrings.ADMOB_BANNER,
+  //     size: AdSize.banner,
+  //     request: AdRequest(),
+  //     listener: listener,
+  //   );
+  //   myBanner.load();
+  // } // ? Commented by jamal end
+
+  /// Banner Ad Implementation End ///
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      key: controller.scaffoldKey,
-      drawer: Drawer(
-        width: SizeConfig.blockSizeHorizontal * 75,
-        child: Column(
-          children: [
-            Container(
-              width: SizeConfig.screenWidth,
-              height: SizeConfig.blockSizeVertical * 30,
-              color: AppColors.drawer,
-              child: Image.asset(
-                AppImages.drawer,
-                scale: 5,
-              ),
-            ),
-            GestureDetector(
-                onTap: () {
-                  LaunchReview.launch(
-                    androidAppId: "com.appgenius.shoppingexpert.ai",
-                  );
-                },
-                child: drawer_widget(Icons.thumb_up, "Rate Us")),
-            GestureDetector(
-                onTap: () {
-                  controller.ShareApp();
-                },
-                child: drawer_widget(Icons.share, "Share")),
-            GestureDetector(
-                onTap: () {
-                  controller
-                      .openURL("https://sites.google.com/view/appgeniusx/home");
-                },
-                child: drawer_widget(Icons.privacy_tip, "Privacy Policy"))
-          ],
-        ),
-      ),
-      appBar: AppBar(
+    // initBanner(); // ? Commented by jamal
+    return Form(
+      key: controller.formKey,
+      child: Scaffold(
         backgroundColor: Colors.grey.shade100,
-        title: Text(
-          'Shopping',
-          style: TextStyle(
-              fontSize: SizeConfig.blockSizeHorizontal * 5,
-              fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        leading: Obx(() => controller.responseState.value == ResponseState.idle
-            ? GestureDetector(
-                onTap: () {
-                  controller.scaffoldKey.currentState!.openDrawer();
-                },
-                child: Icon(Icons.menu))
-            : GestureDetector(
-                onTap: () {
-                  // controller.responseState.value = ResponseState.idle;
-                  controller.onBackPressed();
-                },
-                child: Icon(Icons.arrow_back_ios_new))),
-        actions: [
-          Obx(() =>
-              // RevenueCatService().currentEntitlement.value == Entitlement.paid?
-              //     Container()
-              //     :
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(Routes.GemsView);
-                },
-                child: Row(
-                  children: [
-                    Image.asset(
-                      AppImages.gems,
-                      scale: 30,
-                    ),
-                    Text(" ${controller.gems.value}"),
-                    SizedBox(
-                      width: SizeConfig.screenWidth * 0.03,
-                    )
-                  ],
+        key: controller.scaffoldKey,
+        drawer: Drawer(
+          width: SizeConfig.blockSizeHorizontal * 75,
+          child: Column(
+            children: [
+              Container(
+                width: SizeConfig.screenWidth,
+                height: SizeConfig.blockSizeVertical * 30,
+                color: AppColors.drawer,
+                child: Image.asset(
+                  AppImages.drawer,
+                  scale: 5,
                 ),
-              ))
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            //[j.] Obx(() {
-            //   if (RevenueCatService().currentEntitlement.value ==
-            //           Entitlement.paid ||
-            //       !AppLovinProvider.instance.isInitialized.value) {
-            //     return Container(); // Return an empty container for paid users
-            //   } else {
-            //     return AppLovinProvider.instance.showMacBanner.value
-            //         ? Padding(
-            //             padding: const EdgeInsets.all(8.0),
-            //             child: MaxAdView(
-            //               adUnitId: Platform.isAndroid
-            //                   ? AppStrings.MAX_BANNER_ID
-            //                   : AppStrings.IOS_MAX_BANNER_ID,
-            //               adFormat: AdFormat.banner,
-            //               listener: AdViewAdListener(
-            //                 onAdLoadedCallback: (ad) {
-            //                   print('Banner widget ad loaded from ' +
-            //                       ad.networkName);
-            //                 },
-            //                 onAdLoadFailedCallback: (adUnitId, error) {
-            //                   print(
-            //                       'Banner widget ad failed to load with error code ' +
-            //                           error.code.toString() +
-            //                           ' and message: ' +
-            //                           error.message);
-            //                 },
-            //                 onAdClickedCallback: (ad) {
-            //                   print('Banner widget ad clicked');
-            //                 },
-            //                 onAdExpandedCallback: (ad) {
-            //                   print('Banner widget ad expanded');
-            //                 },
-            //                 onAdCollapsedCallback: (ad) {
-            //                   print('Banner widget ad collapsed');
-            //                 },
-            //               ),
-            //             ),
-            //           )
-            //         : Container();
-            //   }
-            // [j.]}),
-            Container(
-              // height: 60,
-              // color: Colors.amber,
-              child: Center(
-                child: MaxAdView(
-                    adUnitId: AppStrings.MAX_BANNER_ID,
-                    adFormat: AdFormat.banner,
-                    listener: AdViewAdListener(onAdLoadedCallback: (ad) {
-                      print('Banner widget ad loaded from ' + ad.networkName);
-                    }, onAdLoadFailedCallback: (adUnitId, error) {
-                      print('Banner widget ad failed to load with error code ' +
-                          error.code.toString() +
-                          ' and message: ' +
-                          error.message);
-                    }, onAdClickedCallback: (ad) {
-                      print('Banner widget ad clicked');
-                    }, onAdExpandedCallback: (ad) {
-                      print('Banner widget ad expanded');
-                    }, onAdCollapsedCallback: (ad) {
-                      print('Banner widget ad collapsed');
-                    })),
               ),
-            ),
-
-            Obx(() => controller.responseState.value == ResponseState.idle
-                ? _beforeResponseWidget(context)
-                : _ProdcutResponseView()),
+              GestureDetector(
+                  onTap: () {
+                    LaunchReview.launch(
+                      androidAppId: "com.appgenius.shoppingexpert.ai",
+                    );
+                  },
+                  child: drawer_widget(Icons.thumb_up, "Rate Us")),
+              GestureDetector(
+                  onTap: () {
+                    controller.ShareApp();
+                  },
+                  child: drawer_widget(Icons.share, "Share")),
+              GestureDetector(
+                  onTap: () {
+                    controller.openURL(
+                        "https://sites.google.com/view/appgeniusx/home");
+                  },
+                  child: drawer_widget(Icons.privacy_tip, "Privacy Policy"))
+            ],
+          ),
+        ),
+        appBar: AppBar(
+          backgroundColor: Colors.grey.shade100,
+          title: Text(
+            'Shopping',
+            style: TextStyle(
+                fontSize: SizeConfig.blockSizeHorizontal * 5,
+                fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          leading:
+              Obx(() => controller.responseState.value == ResponseState.idle
+                  ? GestureDetector(
+                      onTap: () {
+                        controller.scaffoldKey.currentState!.openDrawer();
+                      },
+                      child: Icon(Icons.menu))
+                  : GestureDetector(
+                      onTap: () {
+                        // controller.responseState.value = ResponseState.idle;
+                        controller.onBackPressed();
+                      },
+                      child: Icon(Icons.arrow_back_ios_new))),
+          actions: [
+            Obx(() =>
+                // RevenueCatService().currentEntitlement.value == Entitlement.paid?
+                //     Container()
+                //     :
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.GemsView);
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        AppImages.gems,
+                        scale: 30,
+                      ),
+                      Text(" ${controller.gems.value}"),
+                      SizedBox(
+                        width: SizeConfig.screenWidth * 0.03,
+                      )
+                    ],
+                  ),
+                ))
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // ? Commented by jamal start
+              // Obx(() => isBannerLoaded.value &&
+              //         AdMobAdsProvider.instance.isAdEnable.value
+              //     ? Container(
+              //         height: AdSize.banner.height.toDouble(),
+              //         child: AdWidget(ad: myBanner))
+              //     : Container()),// ? Commented by jamal end
+              verticalSpace(SizeConfig.blockSizeVertical * 2),
+              Obx(() => controller.responseState.value == ResponseState.idle
+                  ? _beforeResponseWidget(context)
+                  : _ProdcutResponseView()),
+            ],
+          ),
         ),
       ),
     );
@@ -243,8 +234,15 @@ class ShoppingView extends GetView<ShoppingController> {
               ),
             ],
           ),
-          child: TextField(
+          child: TextFormField(
             controller: controller.productTextCTL,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+
             cursorColor: Colors.black,
             style: TextStyle(
                 fontSize: SizeConfig.blockSizeHorizontal * 4,
@@ -362,8 +360,14 @@ class ShoppingView extends GetView<ShoppingController> {
               ),
             ],
           ),
-          child: TextField(
+          child: TextFormField(
             controller: controller.reviewsLimitCTL,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
             keyboardType: TextInputType.number,
             cursorColor: Colors.black,
             style: TextStyle(
@@ -739,7 +743,9 @@ class ShoppingView extends GetView<ShoppingController> {
                 child: Obx(() => Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
-                        "${controller.country.value}",
+                        controller.isFirstTime!.value
+                            ? "${controller.country.value}"
+                            : "United States",
                         style: TextStyle(
                             fontSize: SizeConfig.blockSizeHorizontal * 3.5),
                       ),
@@ -752,7 +758,15 @@ class ShoppingView extends GetView<ShoppingController> {
 
         GestureDetector(
           onTap: () {
-            controller.callBardOrGPT(context);
+            if (controller.formKey.currentState!.validate()) {
+              // If the form is valid, display a snackbar. In the real world,
+              // you'd often call a server or save the information in a database.
+              // // ScaffoldMessenger.of(context).showSnackBar(
+              // //   const SnackBar(content: Text('Processing Data')),
+              // );
+
+              controller.callBardOrGPT(context);
+            }
           },
           child: HeartBeat(
             child: Container(

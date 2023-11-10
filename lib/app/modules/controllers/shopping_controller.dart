@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:applovin_max/applovin_max.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:flutter/foundation.dart';
@@ -15,16 +14,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../data/Gems_rates.dart';
 import '../../data/response_state.dart';
+import '../../provider/admob_ads_provider.dart';
 import '../../routes/app_pages.dart';
 import '../../utills/AppStrings.dart';
 import '../../utills/colors.dart';
 import '../../utills/size_config.dart';
 import '../../utills/style.dart';
-import 'applovin_ads_provider.dart';
 
 class ShoppingController extends GetxController with WidgetsBindingObserver {
   //TODO: Implement ShoppingController
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final formKey = GlobalKey<FormState>();
 
   RxInt current_index = 0.obs;
   int initialGems = 20;
@@ -61,9 +61,9 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
   RxBool isCheckedeBay = false.obs;
   RxBool isCheckedAli = false.obs;
   RxBool isCheckedBest = false.obs;
-  RxBool isCheckedAll = true.obs;
-  TextEditingController productTextCTL = TextEditingController(text: "AirPods");
-  TextEditingController reviewsLimitCTL = TextEditingController(text: "200");
+  RxBool isCheckedAll = false.obs;
+  TextEditingController productTextCTL = TextEditingController();
+  TextEditingController reviewsLimitCTL = TextEditingController();
   //  List<bool> checkedList = [];
   // RxList<bool> isChecked = [false, false, false, false, false].obs;
   RxString? selectedStore = 'Amazon'.obs;
@@ -103,6 +103,7 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
   // "You are writing an article to help users make an informed decision about the best products available on an online store. Based on the search results from the Custom Search API, you will compare the top 3 products according to their prices, reviews, ratings, and quality.Here is the top 3 products json response I found from the online store:JSON Response Here______In this article, you will provide a detailed comparison of these products, considering their prices, customer reviews, ratings, and overall quality. Your goal is to assist users in making an informed decision about which product best suits their needs.Please write the article, covering the following points:1. Briefly introduce the importance of product research and informed decision-making for online shoppers.2. Analyze each product's price and compare them, considering affordability and value for money.3. Evaluate customer reviews and ratings for each product to gauge user satisfaction.4. Discuss the overall quality of each product, considering features, materials, and durability.5. Provide your recommendation on the best product among the three, and explain the reasons behind your choice.Feel free to add any additional insights or comparisons that you find relevant to help readers make an informed decision.";
   @override
   void onInit() {
+    AdMobAdsProvider.instance.initialize();
     // searchAndSaveProductData("Iphone","886ff05605mshbebba3b2ff469aap1fb826jsn0b627542f3e9");
     openAi = OpenAI.instance.build(
       token: AppStrings.OPENAI_TOKEN,
@@ -117,77 +118,18 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
       initialGems = GEMS_RATE.FREE_GEMS;
     }
 
-    AppLovinProvider.instance.init();
-
     CheckUser().then((value) {
       getGems();
     });
 
-///// AppOpen Implementation
-    if (AppLovinProvider.instance.isInitialized.value) {
-      AppLovinMAX.setAppOpenAdListener(AppOpenAdListener(
-        onAdLoadedCallback: (ad) {},
-        onAdLoadFailedCallback: (adUnitId, error) {},
-        onAdDisplayedCallback: (ad) {},
-        onAdDisplayFailedCallback: (ad, error) {
-          AppLovinMAX.loadAppOpenAd(AppStrings.MAX_APPOPEN_ID);
-        },
-        onAdClickedCallback: (ad) {},
-        onAdHiddenCallback: (ad) {
-          AppLovinMAX.loadAppOpenAd(AppStrings.MAX_APPOPEN_ID);
-        },
-        onAdRevenuePaidCallback: (ad) {},
-      ));
-
-      AppLovinMAX.loadAppOpenAd(AppStrings.MAX_APPOPEN_ID);
-    }
-
-    WidgetsBinding.instance.addObserver(this);
-
     super.onInit();
     prefs.then((SharedPreferences pref) {
-      isFirstTime?.value = pref.getBool('first_time') ?? true;
+      isFirstTime?.value = pref.getBool('first_time_response') ?? false;
 
       print("Is First Time from Init: $isFirstTime");
     });
     // checkedList = List.generate(store.length, (index) => false);
     // getlimit();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    print("AppState  : ${state}");
-    switch (state) {
-      case AppLifecycleState.resumed:
-        await showAdIfReady();
-        print("App Resume :");
-        break;
-
-      case AppLifecycleState.paused:
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.detached:
-        break;
-    }
-  }
-
-  Future<void> showAdIfReady() async {
-    if (!AppLovinProvider.instance.isInitialized.value) {
-      return;
-    }
-
-    bool isReady =
-        (await AppLovinMAX.isAppOpenAdReady(AppStrings.MAX_APPOPEN_ID))!;
-    if (isReady) {
-      AppLovinMAX.showAppOpenAd(AppStrings.MAX_APPOPEN_ID);
-    } else {
-      AppLovinMAX.loadAppOpenAd(AppStrings.MAX_APPOPEN_ID);
-    }
   }
 
   // Future getlimit() async {
@@ -320,7 +262,7 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
       responseState.value = ResponseState.success;
       EasyLoading.dismiss();
       decreaseGEMS(GEMS_RATE.Shopping_GEMS_RATE);
-
+      setFirstTime(true);
       print("OutPut Value: ${output.value}");
     } catch (e) {
       EasyLoading.dismiss();
@@ -678,11 +620,11 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
     super.onClose();
   }
 
-  void setFirstTime(bool bool) {
+  void setFirstTime(bool value) {
     print("setFirstTime");
     prefs.then((SharedPreferences pref) {
-      pref.setBool('first_time', bool);
-
+      pref.setBool('first_time_response', value);
+      isFirstTime!.value = value;
       print("Is First Time: $isFirstTime");
     });
   }
