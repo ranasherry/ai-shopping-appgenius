@@ -1,0 +1,4 @@
+enum AuthMethodType {
+  email,
+  google,
+}
