@@ -120,22 +120,30 @@ class ShoppingView extends GetView<ShoppingController> {
             'Shopping',
             style: TextStyle(
                 fontSize: SizeConfig.blockSizeHorizontal * 5,
-                fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.bold,
+                color: Colors.black),
           ),
           centerTitle: true,
+          elevation: 0,
           leading:
               Obx(() => controller.responseState.value == ResponseState.idle
                   ? GestureDetector(
                       onTap: () {
                         controller.scaffoldKey.currentState!.openDrawer();
                       },
-                      child: Icon(Icons.menu))
+                      child: Icon(
+                        Icons.menu,
+                        color: Colors.black,
+                      ))
                   : GestureDetector(
                       onTap: () {
                         // controller.responseState.value = ResponseState.idle;
                         controller.onBackPressed();
                       },
-                      child: Icon(Icons.arrow_back_ios_new))),
+                      child: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: Colors.black,
+                      ))),
           actions: [
             Obx(() =>
                 // RevenueCatService().currentEntitlement.value == Entitlement.paid?
@@ -151,7 +159,10 @@ class ShoppingView extends GetView<ShoppingController> {
                         AppImages.gems,
                         scale: 30,
                       ),
-                      Text(" ${controller.gems.value}"),
+                      Text(
+                        " ${controller.gems.value}",
+                        style: TextStyle(color: Colors.black),
+                      ),
                       SizedBox(
                         width: SizeConfig.screenWidth * 0.03,
                       )
@@ -164,6 +175,44 @@ class ShoppingView extends GetView<ShoppingController> {
           padding: EdgeInsets.all(16.0),
           child: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: SizeConfig.blockSizeVertical * 8,
+                    width: SizeConfig.blockSizeHorizontal * 85,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Color(0xFFF5D4A7), Color(0xFFFCEDD9)],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight),
+                      // color: Color(0xFFD5E4FF),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(
+                              SizeConfig.blockSizeHorizontal * 4),
+                          bottomRight: Radius.circular(
+                              SizeConfig.blockSizeHorizontal * 4)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.shade300, // Shadow color
+                          spreadRadius: 2, // Spread radius
+                          blurRadius: 10, // Blur radius
+                          offset: Offset(0, 5), // Offset in x and y direction
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                        child: Text(
+                      "Note: This Content is AI generated",
+                      style: TextStyle(
+                          fontSize: SizeConfig.blockSizeHorizontal * 4,
+                          fontWeight: FontWeight.bold,
+                          // color: Color(0xFF013961)
+                          color: Color(0xFF976133)),
+                    )),
+                  ),
+                ],
+              ),
               // ? Commented by jamal start
               // Obx(() => isBannerLoaded.value &&
               //         AdMobAdsProvider.instance.isAdEnable.value

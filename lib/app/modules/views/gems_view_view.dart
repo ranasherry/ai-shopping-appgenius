@@ -47,15 +47,23 @@ class GemsView extends GetView<GemsViewController> {
   Widget build(BuildContext context) {
     initNative();
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+        backgroundColor: Colors.grey.shade100,
         centerTitle: true,
-        title: Text('Get GEMS'),
+        title: Text(
+          'Get GEMS',
+          style: TextStyle(color: Colors.black),
+        ),
         leading: GestureDetector(
             onTap: () {
               AdMobAdsProvider.instance.showInterstitialAd(() {});
               Get.back();
             },
-            child: Icon(Icons.arrow_back_ios_new)),
+            child: Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.black,
+            )),
         // centerTitle: true,
       ),
       body: Center(
