@@ -815,6 +815,7 @@ class ShoppingView extends GetView<ShoppingController> {
               // );
 
               controller.callBardOrGPT(context);
+              // controller.sendGemeniMessage("userInput");
             }
           },
           child: HeartBeat(

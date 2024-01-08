@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,8 @@ import 'app/routes/app_pages.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  Gemini.init(
+      apiKey: 'AIzaSyCwMNpCEgkX_bxpq_hcxFa1CuN3fPZfk7o', enableDebugging: true);
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
 

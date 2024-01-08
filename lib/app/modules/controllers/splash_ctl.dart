@@ -29,14 +29,15 @@ class SplashController extends GetxController {
       percent.value += n;
       if (percent.value >= 100) {
         percent.value = 100;
-        // Get.offNamed(Routes.ShoppingView);
+        print("inside timer");
+        Get.offNamed(Routes.ShoppingView);
 
-        Get.to(
-        Initializescreen(tragetWidget: Routes.ShoppingView),
-        binding: BindingsBuilder(() {
-          Get.put(InitializationHelper());
-        }),
-      );
+      //   Get.to(
+      //   Initializescreen(tragetWidget: Routes.ShoppingView),
+      //   binding: BindingsBuilder(() {
+      //     Get.put(InitializationHelper());
+      //   }),
+      // );
 
 
         timer!.cancel();
