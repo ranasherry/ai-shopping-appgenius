@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping_app/app/modules/views/initalize_screen.dart';
+import 'package:shopping_app/app/provider/init_helper.dart';
 
 import '../../provider/admob_ads_provider.dart';
 import '../../routes/app_pages.dart';
@@ -27,9 +29,15 @@ class SplashController extends GetxController {
       percent.value += n;
       if (percent.value >= 100) {
         percent.value = 100;
-        Get.offNamed(Routes.ShoppingView);
+        // Get.offNamed(Routes.ShoppingView);
 
-        // isLoaded.value = true;
+        Get.to(
+        Initializescreen(tragetWidget: Routes.ShoppingView),
+        binding: BindingsBuilder(() {
+          Get.put(InitializationHelper());
+        }),
+      );
+
 
         timer!.cancel();
       }
