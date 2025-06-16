@@ -72,6 +72,7 @@ dependencies:
   firebase_storage: ^11.2.5
   firebase_crashlytics: ^3.3.6
   cloud_firestore: ^4.8.2
+  flutter_gemini: ^1.0.1
 
 dependency_overrides:
   http: ^1.1.0

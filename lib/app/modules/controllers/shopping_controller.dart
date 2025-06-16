@@ -5,6 +5,7 @@ import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +21,7 @@ import '../../utills/AppStrings.dart';
 import '../../utills/colors.dart';
 import '../../utills/size_config.dart';
 import '../../utills/style.dart';
+import 'dart:developer' as developer;
 
 class ShoppingController extends GetxController with WidgetsBindingObserver {
   //TODO: Implement ShoppingController
@@ -30,6 +32,7 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
   int initialGems = 20;
   RxInt gems = 0.obs;
   bool? firstTime = false;
+  bool enableGemini = false;
 
   // RxInt gems = 0.obs;
   //  int gems_rate = 3;
@@ -142,13 +145,100 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
 
   //   await prefs.setInt('gems', gems.value);
   // }
+  String limit =
+      "";
+  // callGemini(){
+  //   Future<String?> sendGemeniMessage(
+  //     RxList<ChatMessage> history, message) async {
+  //   print("sendGemeniMessage Called..");
+  //   String? generatedMessage = null;
+
+  //   Content userInstruction =
+  //       Content(parts: [Parts(text: limit)], role: 'user');
+
+  //   List<Content> chatContent = [];
+  //   chatContent.add(userInstruction);
+  //   history.reversed.take(4).forEach((element) {
+  //     if (element.senderType == SenderType.Bot) {
+  //       Content content =
+  //           Content(parts: [Parts(text: element.message)], role: 'model');
+  //       chatContent.add(content);
+  //     } else {
+  //       Content content2 =
+  //           Content(parts: [Parts(text: element.message)], role: 'user');
+  //       chatContent.add(content2);
+  //     }
+
+  //     // Add both content and content2 to chatContent
+  //   });
+
+  //   // List<Content> contentTempList = [
+  //   //   Content(parts: [Parts(text: "Hi How are your")], role: 'user'),
+  //   //   // Content(
+  //   //   //     parts: [Parts(text: "Can you do something for me?")], role: 'user')
+  //   // ];
+
+  //   // Content userPrompt = Content(parts: [Parts(text: message)], role: 'user');
+  //   // chatContent.add(userPrompt);
+  //   developer.log("chatContent $chatContent");
+
+  //   final gemini = Gemini.instance;
+
+  //   try {
+  //     var value = await gemini.chat(chatContent);
+  //     generatedMessage = value?.output;
+  //     print("gemini output: $generatedMessage");
+
+  //     developer.log(value?.output ?? 'without output');
+  //     return generatedMessage;
+  //   } catch (e) {
+  //     developer.log('Gemeni Error $e', error: e);
+  //     return null;
+
+  //     // generatedMessage = "Error Message $e";
+  //   }
+  // }
+  // }
+
+  // callGemini() {
+  Future<String?> sendGemeniMessage(String userInput) async {
+    print("sendGemeniMessage Called..");
+    String? generatedMessage = null;
+
+    userInput= "what is AI?";
+
+    Content userInstruction =
+        Content(parts: [Parts(text: userInput)], role: 'user');
+
+    List<Content> chatContent = [userInstruction];
+
+    // You can customize the logic for building chatContent based on your requirements
+
+    final gemini = Gemini.instance;
+
+    try {
+      var value = await gemini.chat(chatContent);
+      generatedMessage = value?.output;
+      print("gemini output: $generatedMessage");
+
+      developer.log(value?.output ?? 'without output');
+      return generatedMessage;
+    } catch (e) {
+      developer.log('Gemeni Error $e', error: e);
+      return null;
+    }
+  }
+// }
+
 
   callBardOrGPT(context) async {
     bool result = await InternetConnectionChecker().hasConnection;
     if (result == true) {
       if (callBard == true) {
+        print("inside if");
         valid(context);
       } else {
+        print("inside else");
         // log("no");
         if (productName.isNotEmpty) {
           if (isCheckedAmazon.value == true) {
@@ -185,6 +275,7 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
   // }
 
   valid(context) async {
+    print("inside validator");
     if (gems.value > 0 && gems.value >= GEMS_RATE.Shopping_GEMS_RATE) {
       bool result = await InternetConnectionChecker().hasConnection;
       if (result == true) {
@@ -210,7 +301,12 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
 
         fetchReponce(sites).then((value) async {
           List<String> links = extractLinks(responseData);
+          if (enableGemini == false) {
           await _bardImplemetation(sites, links.toString());
+        }
+        else{
+          await GeminiImplemetation(sites, links.toString());
+        }
           // validator(context);
         });
 
@@ -243,6 +339,7 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> _bardImplemetation(String sites, String googleSearch) async {
+    print("inside Bard");
     print("Extracted Links: $googleSearch");
     String BardReq =
         "Compare the product: (${productName.value}) available in following links and give the link of best product available  Links=$googleSearch write paragraph in atleast 100 words include link in your response as well. Do not mention that you are given the links of product just write as you know everything. and give your response in bullet points. do not give your response in latext format";
@@ -274,6 +371,81 @@ class ShoppingController extends GetxController with WidgetsBindingObserver {
 
       output.value = 'Error generating text: $e';
     }
+  }
+
+  Future<void> GeminiImplemetation(String sites, String googleSearch) async {
+    print("inside Gemini");
+    var generatedMessage = null;
+    print("Extracted Links: $googleSearch");
+    String BardReq =
+        "Compare the product: (${productName.value}) available in following links and give the link of best product available  Links=$googleSearch write paragraph in atleast 100 words include link in your response as well. Do not mention that you are given the links of product just write as you know everything. and give your response in bullet points. do not give your response in latext format";
+    // String BardReq =
+    String GeminiReq =
+        "Compare the product: (${productName.value}) available in following links and give the link of best product available  Links=$googleSearch write paragraph in atleast 100 words include link in your response as well. Do not mention that you are given the links of product just write as you know everything. and give your response in bullet points. do not give your response in latext format";
+    // String BardReq =
+    //     "Compare the best ${productName.value} in sites: $sites and country: ${country.value} with more then ${userRating.value} reviews. Write short paragraph on comparison and give available link of best product among all. Note: link should not be expired";
+    // String BardReq =
+    //     "Copamare top 3 the product: ${productName.value} from sites: $sites with reviews > ${userRating.value} and country=${country.value}. write a short paragraph on their comparison and give atleast a single link at the end for the best product. make headings if you want to. and conclude everything in 100 words Note: 1- do not show data in tabular form.  3- link must exist and in working currently";
+    // String BardReq =
+    //     "q=give me reviews about the product ${productName.value} and also give some details of site: Amazon:${isCheckedAmazon.value},eBay:${isCheckedeBay.value},Ali Express:${isCheckedAli.value},best buy:${isCheckedBest.value}, reviews > ${userRating.value} country=${country.value}&lang=en&num=3  Extra Request: Write everything in Proper format and compare top products available in 150 words and give link about the best product at the end. do not put brackets or any other character around link as I am using linkify to show tho whole output Example linkes:  www.google.com  ,  www.youtube.com";
+
+    Content userInstruction =
+        Content(parts: [Parts(text: GeminiReq)], role: 'user');
+
+    List<Content> chatContent = [userInstruction];
+
+    // You can customize the logic for building chatContent based on your requirements
+
+    final gemini = Gemini.instance;
+
+    try {
+      var value = await gemini.chat(chatContent);
+      generatedMessage = value?.output;
+      print("gemini output: $generatedMessage");
+
+      developer.log(value?.output ?? 'without output');
+      output.value = generatedMessage;
+      responseState.value = ResponseState.success;
+      EasyLoading.dismiss();
+      decreaseGEMS(GEMS_RATE.Shopping_GEMS_RATE);
+      setFirstTime(true);
+      print("OutPut Value: ${output.value}");
+      return generatedMessage;
+    } catch (e) {
+      EasyLoading.dismiss();
+      EasyLoading.showError("Error occured Try again later");
+      showNetworkErrorDialog();
+      // Handle the exception here, e.g., show an error message.
+      print('Error generating text: $e');
+      // You can also update the UI to display an error message.
+
+      output.value = 'Error generating text: $e';
+      developer.log('Gemeni Error $e', error: e);
+      return null;
+    }
+
+
+    // try {
+    //   String generatedText = await generateTextBardAPI(
+    //       prompt: BardReq, apiKey: AppStrings.PALM_APIKEY);
+    //   // Do something with the generated text, like updating the UI.
+
+    //   output.value = generatedText;
+    //   responseState.value = ResponseState.success;
+    //   EasyLoading.dismiss();
+    //   decreaseGEMS(GEMS_RATE.Shopping_GEMS_RATE);
+    //   setFirstTime(true);
+    //   print("OutPut Value: ${output.value}");
+    // } catch (e) {
+    //   EasyLoading.dismiss();
+    //   EasyLoading.showError("Error occured Try again later");
+    //   showNetworkErrorDialog();
+    //   // Handle the exception here, e.g., show an error message.
+    //   print('Error generating text: $e');
+    //   // You can also update the UI to display an error message.
+
+    //   output.value = 'Error generating text: $e';
+    // }
   }
 
   Toster(msg, color) {
